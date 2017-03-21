@@ -1,0 +1,4 @@
+scraper/*.log
+scraper/*.ipynb_checkpoints
+scraper/*.ipynb
+
