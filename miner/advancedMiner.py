@@ -17,7 +17,7 @@ def process_text(text):
             words.append(w)
 
     print(words)
-    return 0
+    return "SUMMARY"
 
 
-process_text(import_text('input.txt'))
+# process_text(import_text('input.txt'))

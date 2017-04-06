@@ -3,6 +3,22 @@ import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
+  constructor(){
+    super()
+
+    this.updateResults = this.updateResults.bind(this)
+  }
+  
+  state = {
+    text: "",
+    results: ""
+  }
+
+  updateResults(res){
+    res.text()
+      .then(d => this.setState({results: d}))
+  }
+
   render() {
     return (
       <div className="App">
@@ -11,9 +27,13 @@ class App extends Component {
           <h2>Welcome to Tilder</h2>
         </div>
         <p className="App-intro">
-          <textarea></textarea>
+          <textarea value={this.state.text} onChange={e => this.setState({text: e.target.value})}></textarea>
           <br />
-          <input type="submit"></input>
+          <input type="submit" onClick={e => fetch(`http://localhost:5000/${this.state.text}`).then(this.updateResults) ** this.setState({text: ""})}></input>
+          <br />
+          <br />
+          <br />
+          <code>{this.state.results}</code>
         </p>
       </div>
     );
