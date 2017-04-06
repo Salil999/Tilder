@@ -5,3 +5,4 @@ miner/ghostdriver.log
 .idea
 .ipynb_checkpoints
 .DS_Store
+**.pyc
