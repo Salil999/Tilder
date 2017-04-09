@@ -23,7 +23,5 @@ def process_text(text):
     print(words)
     print(Counter(bigrams))
     print(Counter(trigrams))
-    return "Cocks"
+    return "SUMMARY"
 
-
-#process_text(import_text('input.txt'))
