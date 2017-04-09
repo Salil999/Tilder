@@ -20,8 +20,9 @@ def process_text(text):
     bigrams = nl.ngrams(words, 2)
     trigrams = nl.ngrams(words, 3)
 
-    print(Counter(bigrams))
     print(words)
+    print(Counter(bigrams))
+    print(Counter(trigrams))
     return "Cocks"
 
 
