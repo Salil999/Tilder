@@ -20,8 +20,8 @@ returns: An array where each index of the array has a score and that index is
 def get_sentence_scores(s_array, vecs):
     scores = []
     for s in range( len( s_array ) ):
-        print s
-        print abs(vecs[s][0])
+        print(s)
+        print(abs(vecs[s][0]))
         scores.append(abs(vecs[s][0]))
     return scores
 
