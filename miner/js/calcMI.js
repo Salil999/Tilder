@@ -14,7 +14,7 @@ const makeHash = text => {
   text
     .split(' ')
     .map(w => w.toLowerCase())
-    .map(w => w.match(/[\w-]+/)[0])
+    .map(w => _.last(w.match(/[\w-']+/)[0].split('\'')))
     // remove punct here
     .forEach((word, i) => {
       hash[word] = hash[word] || [];
