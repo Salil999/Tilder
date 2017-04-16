@@ -1,9 +1,23 @@
 import nltk as nl
 from nltk.corpus import stopwords
 from collections import Counter
+# import numpy as np
 import subprocess
 
 import RAKE.rake as rk
+
+def memoize(f):
+    """ Memoization decorator for functions taking one or more arguments. """
+    class memodict(dict):
+        def __init__(self, f):
+            self.f = f
+        def __call__(self, *args):
+            return self[args]
+        def __missing__(self, key):
+            ret = self[key] = self.f(*key)
+            return ret
+    return memodict(f)
+
 
 def import_text(file_path):
     file = open(file_path, 'r')
@@ -28,26 +42,39 @@ def process_text(text):
     print(Counter(trigrams))
     return "SUMMARY"
 
+@memoize
+def callMIScript(phrase1, phrase2):
+    proc = subprocess.Popen(["./js/calcMI.js", "--phrase1="+phrase1, "--phrase2="+phrase2], stdout=subprocess.PIPE)
+    line = proc.stdout.readline()
+    return line
+
+
 def calculate_MI(keywords):
     keywordMI = {}
 
-    print(keywords)
+    keywords = [tup for tup in keywords if tup[1] > 4.0]
+    # print(keywords)
 
-    for i in range(len(keywords)):
+    for i in range(5):
         phrase1 = keywords[i][0].encode("ascii", "ignore").decode("ascii")
         if phrase1 != keywords[i][0]:
-                continue
-        for j in range(len(keywords)):
+            continue
+        subPhrases=[]
+        for j in range(i, len(keywords)):
             phrase2 = keywords[j][0].encode("ascii", "ignore").decode("ascii")
             if phrase2 != keywords[j][0]:
                 continue
-            proc = subprocess.Popen(["./js/calcMI.js", "--phrase1="+phrase1, "--phrase2="+phrase2], stdout=subprocess.PIPE)
-            line = proc.stdout.readline()
+            if i == j:
+                continue
+            line = callMIScript(phrase1, phrase2)
             print(phrase1 + " AND " + phrase2)
             print(line)
             mi = float(line)
-            keywordMI[(phrase1, phrase2)] = mi
-
+            subPhrases.append((phrase2, mi))
+            # keywordMI[(phrase1, phrase2)] = mi
+        # print()
+        subPhrases = [tup[0] for tup in sorted(subPhrases, key = lambda tup: tup[1])[::-1][:4]]
+        print(phrase1 + ': ' + ', '.join(subPhrases))
     print(keywordMI)
     return 0
 
@@ -58,6 +85,7 @@ def find_keywords(text):
 
 keywords = find_keywords(import_text("input.txt"))
 calculate_MI(keywords)
+
 
 #proc = subprocess.Popen(["./js/calcMI.js", "--phrase1=background language model", "--phrase2=pseudocounts"], stdout=subprocess.PIPE)
 #print(float(proc.stdout.readline()))
