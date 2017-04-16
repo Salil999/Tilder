@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS, cross_origin
-import miner.advancedMiner as Miner
+import advancedMiner as Miner
 
 app = Flask(__name__)
 cors = CORS(app)

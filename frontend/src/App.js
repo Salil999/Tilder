@@ -33,7 +33,7 @@ class App extends Component {
           <br />
           <br />
           <br />
-          <code>{this.state.results}</code>
+          <code>{this.state.results.split('\n').map(l => (<span>{l}<br /></span>))}</code>
         </p>
       </div>
     );

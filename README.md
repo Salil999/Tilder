@@ -2,9 +2,26 @@
 Tilder project for CS410 @ UIUC
 
 
+## setup
+
+```bash
+cd miner/js
+
+# If you have yarn:
+yarn
+# If you don't have yarn:
+npm install
+# after yarn/npm install:
+
+cd -
+
+```
+
 ## To run server
 
-```python
+```bash
+cd miner
+
 python3 server.py
 ```
 

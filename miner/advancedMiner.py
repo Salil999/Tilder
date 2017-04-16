@@ -1,6 +1,6 @@
+from collections import Counter
 import nltk as nl
 from nltk.corpus import stopwords
-from collections import Counter
 # import numpy as np
 import subprocess
 
@@ -26,21 +26,23 @@ def import_text(file_path):
 
 
 def process_text(text):
-    tokenizer = nl.tokenize.RegexpTokenizer(r'\w+')
-    tokens = tokenizer.tokenize(text)
-    stopWords = set(stopwords.words('english'))
-    words = []
-    for w in tokens:
-        if w not in stopWords:
-            words.append(w)
+    # tokenizer = nl.tokenize.RegexpTokenizer(r'\w+')
+    # tokens = tokenizer.tokenize(text)
+    # stopWords = set(stopwords.words('english'))
+    # words = []
+    # for w in tokens:
+    #     if w not in stopWords:
+    #         words.append(w)
 
-    bigrams = nl.ngrams(words, 2)
-    trigrams = nl.ngrams(words, 3)
+    # bigrams = nl.ngrams(words, 2)
+    # trigrams = nl.ngrams(words, 3)
 
-    print(words)
-    print(Counter(bigrams))
-    print(Counter(trigrams))
-    return "SUMMARY"
+    # print(words)
+    # print(Counter(bigrams))
+    # print(Counter(trigrams))
+    keywords = find_keywords(text)
+    # calculate_MI(keywords)
+    return calculate_MI(keywords)
 
 @memoize
 def callMIScript(phrase1, phrase2):
@@ -51,6 +53,7 @@ def callMIScript(phrase1, phrase2):
 
 def calculate_MI(keywords):
     keywordMI = {}
+    finalSummary = ""
 
     keywords = [tup for tup in keywords if tup[1] > 4.0]
     # print(keywords)
@@ -74,17 +77,16 @@ def calculate_MI(keywords):
             # keywordMI[(phrase1, phrase2)] = mi
         # print()
         subPhrases = [tup[0] for tup in sorted(subPhrases, key = lambda tup: tup[1])[::-1][:4]]
-        print(phrase1 + ': ' + ', '.join(subPhrases))
+        summaryLine = phrase1 + ': ' + ', '.join(subPhrases)
+        print(summaryLine)
+        finalSummary += summaryLine + '\n'
+    print(finalSummary)
     print(keywordMI)
-    return 0
+    return finalSummary
 
 def find_keywords(text):
         keywords = rk.Rake("SmartStoplist.txt")
         return keywords.run(text)
-
-
-keywords = find_keywords(import_text("input.txt"))
-calculate_MI(keywords)
 
 
 #proc = subprocess.Popen(["./js/calcMI.js", "--phrase1=background language model", "--phrase2=pseudocounts"], stdout=subprocess.PIPE)
