@@ -25,23 +25,15 @@ def import_text(file_path):
     return data
 
 
+def textToFile(text):
+    file = open("input.txt", "w")
+    text = text.replace('\n', '').replace('\r', '')
+    file.write(text)
+
+
 def process_text(text):
-    # tokenizer = nl.tokenize.RegexpTokenizer(r'\w+')
-    # tokens = tokenizer.tokenize(text)
-    # stopWords = set(stopwords.words('english'))
-    # words = []
-    # for w in tokens:
-    #     if w not in stopWords:
-    #         words.append(w)
-
-    # bigrams = nl.ngrams(words, 2)
-    # trigrams = nl.ngrams(words, 3)
-
-    # print(words)
-    # print(Counter(bigrams))
-    # print(Counter(trigrams))
+    textToFile(text)
     keywords = find_keywords(text)
-    # calculate_MI(keywords)
     return calculate_MI(keywords)
 
 @memoize
@@ -91,3 +83,20 @@ def find_keywords(text):
 
 #proc = subprocess.Popen(["./js/calcMI.js", "--phrase1=background language model", "--phrase2=pseudocounts"], stdout=subprocess.PIPE)
 #print(float(proc.stdout.readline()))
+
+
+## REFERENCE MATERIAL
+    # tokenizer = nl.tokenize.RegexpTokenizer(r'\w+')
+    # tokens = tokenizer.tokenize(text)
+    # stopWords = set(stopwords.words('english'))
+    # words = []
+    # for w in tokens:
+    #     if w not in stopWords:
+    #         words.append(w)
+
+    # bigrams = nl.ngrams(words, 2)
+    # trigrams = nl.ngrams(words, 3)
+
+    # print(words)
+    # print(Counter(bigrams))
+    # print(Counter(trigrams))
