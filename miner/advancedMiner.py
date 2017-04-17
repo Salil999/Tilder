@@ -26,9 +26,12 @@ def import_text(file_path):
 
 
 def textToFile(text):
-    file = open("input.txt", "w")
-    text = text.replace('\n', '').replace('\r', '')
-    file.write(text)
+    inputFiles = ["input.txt", "../input.txt"]
+    for fileName in inputFiles:
+        file = open(fileName, "w")
+        text = text.replace('\n', '').replace('\r', '')
+        file.write(text)
+        file.close()
 
 
 def process_text(text):
