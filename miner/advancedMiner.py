@@ -49,6 +49,7 @@ def callMIScript(phrase1, phrase2):
 def calculate_MI(keywords):
     keywordMI = {}
     finalSummary = ""
+    uniqueKeyphrases = set()
 
     keywords = [tup for tup in keywords if tup[1] > 4.0]
     # print(keywords)
@@ -58,6 +59,8 @@ def calculate_MI(keywords):
         if phrase1 != keywords[i][0]:
             continue
         subPhrases=[]
+        if phrase1 not in uniqueKeyphrases:
+            uniqueKeyphrases.add(phrase1)
         for j in range(i, len(keywords)):
             phrase2 = keywords[j][0].encode("ascii", "ignore").decode("ascii")
             if phrase2 != keywords[j][0]:
@@ -73,17 +76,23 @@ def calculate_MI(keywords):
         # print()
         subPhrases = [tup[0] for tup in sorted(subPhrases, key = lambda tup: tup[1])[::-1][:4]]
         summaryLine = phrase1 + ': ' + ', '.join(subPhrases)
+        for elem in subPhrases:
+            if elem not in uniqueKeyphrases:
+                uniqueKeyphrases.add(elem)
         print(summaryLine)
         finalSummary += summaryLine + '\n'
+    print(list(uniqueKeyphrases))
     print(finalSummary)
     print(keywordMI)
-    return finalSummary
+    return finalSummary, uniqueKeyphrases 
 
 def find_keywords(text):
         keywords = rk.Rake("SmartStoplist.txt")
         return keywords.run(text)
 
 
+
+# calculate_MI(find_keywords(import_text("input.txt")))
 #proc = subprocess.Popen(["./js/calcMI.js", "--phrase1=background language model", "--phrase2=pseudocounts"], stdout=subprocess.PIPE)
 #print(float(proc.stdout.readline()))
 
