@@ -22,9 +22,12 @@ def textToFile(text):
 
 
 def process_text(text):
-	textToFile(text)
-	keywords = find_keywords(text)
-	return calculate_MI(keywords)
+    textToFile(text)
+    keywords = find_keywords(text)
+    summary, uniques = calculate_MI(keywords)
+    sentenceDict = map_keyphrase_sentence(uniques, text)
+    return {"summary":summary, "sentences":sentenceDict}
+
 
 
 def callMIScript(phrase1, phrase2):
