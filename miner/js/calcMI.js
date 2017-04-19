@@ -14,7 +14,7 @@ const makeHash = text => {
   _(text
     .split(' '))
     .map(w => w.toLowerCase())
-    .map(w => [_.first(w.match(/[\w-']+/)[0].split('\'')), _.last(w.match(/[\w-']+/)[0].split('\''))])
+    .map(w => [_.first((w.match(/[\w-']+/) || [''])[0].split('\'')), _.last((w.match(/[\w-']+/) || [''])[0].split('\''))])
     .flatten()
     .value()
 

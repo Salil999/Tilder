@@ -36,47 +36,44 @@ def callMIScript(phrase1, phrase2):
 
 
 def calculate_MI(keywords):
-	"""
-	Calculates the mutual information based on the keywords.
+    keywordMI = {}
+    finalSummary = ""
+    uniqueKeyphrases = set()
 
-	Args:
-	    keywords (TYPE): Description
-	
-	Returns:
-	    TYPE: Description
-	"""
-	keywordMI = {}
-	finalSummary = ""
+    keywords = [tup for tup in keywords if tup[1] > 4.0]
+    # print(keywords)
 
-	keywords = [tup for tup in keywords if tup[1] > 4.0]
-	# print(keywords)
-
-	for i in range(5):
-		phrase1 = keywords[i][0].encode("ascii", "ignore").decode("ascii")
-		if phrase1 != keywords[i][0]:
-			continue
-		subPhrases = []
-		for j in range(i, len(keywords)):
-			phrase2 = keywords[j][0].encode("ascii", "ignore").decode("ascii")
-			if phrase2 != keywords[j][0]:
-				continue
-			if i == j:
-				continue
-			line = callMIScript(phrase1, phrase2)
-			print(phrase1 + " AND " + phrase2)
-			print(line)
-			mi = float(line)
-			subPhrases.append((phrase2, mi))
-			# keywordMI[(phrase1, phrase2)] = mi
-		# print()
-		subPhrases = [tup[0] for tup in sorted(
-			subPhrases, key=lambda tup: tup[1])[::-1][:4]]
-		summaryLine = phrase1 + ': ' + ', '.join(subPhrases)
-		print(summaryLine)
-		finalSummary += summaryLine + '\n'
-	print(finalSummary)
-	print(keywordMI)
-	return finalSummary
+    for i in range(5):
+        phrase1 = keywords[i][0].encode("ascii", "ignore").decode("ascii")
+        if phrase1 != keywords[i][0]:
+            continue
+        subPhrases=[]
+        if phrase1 not in uniqueKeyphrases:
+            uniqueKeyphrases.add(phrase1)
+        for j in range(i, len(keywords)):
+            phrase2 = keywords[j][0].encode("ascii", "ignore").decode("ascii")
+            if phrase2 != keywords[j][0]:
+                continue
+            if i == j:
+                continue
+            line = callMIScript(phrase1, phrase2)
+            print(phrase1 + " AND " + phrase2)
+            print(line)
+            mi = float(line)
+            subPhrases.append((phrase2, mi))
+            # keywordMI[(phrase1, phrase2)] = mi
+        # print()
+        subPhrases = [tup[0] for tup in sorted(subPhrases, key = lambda tup: tup[1])[::-1][:4]]
+        summaryLine = phrase1 + ': ' + ', '.join(subPhrases)
+        for elem in subPhrases:
+            if elem not in uniqueKeyphrases:
+                uniqueKeyphrases.add(elem)
+        print(summaryLine)
+        finalSummary += summaryLine + '\n'
+    print(list(uniqueKeyphrases))
+    print(finalSummary)
+    print(keywordMI)
+    return finalSummary, uniqueKeyphrases
 
 
 def find_keywords(text):
@@ -139,6 +136,8 @@ def add_to_dict(dictionary, key, val):
 	return dictionary
 
 
+
+# calculate_MI(find_keywords(import_text("input.txt")))
 #proc = subprocess.Popen(["./js/calcMI.js", "--phrase1=background language model", "--phrase2=pseudocounts"], stdout=subprocess.PIPE)
 # print(float(proc.stdout.readline()))
 
