@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import Graph from './Graph'
+
 class App extends Component {
   constructor(){
     super()
@@ -17,6 +19,14 @@ class App extends Component {
   updateResults(res){
     res.text()
       .then(d => this.setState({results: d}))
+  }
+
+  getData(){
+    return ({
+      topic1: ['topic2', 'topic3', 'topic4'],
+      topic2: ['topic3', 'topic4'],
+      topic3: ['topic5'],
+    })
   }
 
   render() {
@@ -35,6 +45,7 @@ class App extends Component {
           <br />
           <code>{this.state.results.split('\n').map(l => (<span>{l}<br /></span>))}</code>
         </p>
+        <Graph data={this.getData()} />
       </div>
     );
   }
