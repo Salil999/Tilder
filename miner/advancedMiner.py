@@ -92,7 +92,7 @@ def find_keywords(text):
 
 
 
-calculate_MI(find_keywords(import_text("input.txt")))
+# calculate_MI(find_keywords(import_text("input.txt")))
 #proc = subprocess.Popen(["./js/calcMI.js", "--phrase1=background language model", "--phrase2=pseudocounts"], stdout=subprocess.PIPE)
 #print(float(proc.stdout.readline()))
 
