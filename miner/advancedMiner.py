@@ -1,49 +1,38 @@
 from collections import Counter
-import nltk as nl
 from nltk.corpus import stopwords
-# import numpy as np
+from nltk.tokenize import sent_tokenize
+import wikipedia
 import subprocess
-
 import RAKE.rake as rk
-
-def memoize(f):
-    """ Memoization decorator for functions taking one or more arguments. """
-    class memodict(dict):
-        def __init__(self, f):
-            self.f = f
-        def __call__(self, *args):
-            return self[args]
-        def __missing__(self, key):
-            ret = self[key] = self.f(*key)
-            return ret
-    return memodict(f)
 
 
 def import_text(file_path):
-    file = open(file_path, 'r')
-    data = file.read().replace('\n', ' ')
-    return data
+	file = open(file_path, 'r')
+	data = file.read().replace('\n', ' ')
+	return data
 
 
 def textToFile(text):
-    inputFiles = ["input.txt", "../input.txt"]
-    for fileName in inputFiles:
-        file = open(fileName, "w")
-        text = text.replace('\n', '').replace('\r', '')
-        file.write(text)
-        file.close()
+	inputFiles = ["input.txt", "../input.txt"]
+	for fileName in inputFiles:
+		file = open(fileName, "w")
+		text = text.replace('\n', '').replace('\r', '')
+		file.write(text)
+		file.close()
 
 
 def process_text(text):
-    textToFile(text)
-    keywords = find_keywords(text)
-    return calculate_MI(keywords)
+	textToFile(text)
+	keywords = find_keywords(text)
+	return calculate_MI(keywords)
 
-@memoize
+
 def callMIScript(phrase1, phrase2):
-    proc = subprocess.Popen(["./js/calcMI.js", "--phrase1="+phrase1, "--phrase2="+phrase2], stdout=subprocess.PIPE)
-    line = proc.stdout.readline()
-    return line
+	proc = subprocess.Popen(["./js/calcMI.js", "--phrase1=" +
+							phrase1, "--phrase2=" + phrase2],
+							stdout=subprocess.PIPE)
+	line = proc.stdout.readline()
+	return line
 
 
 def calculate_MI(keywords):
@@ -84,31 +73,87 @@ def calculate_MI(keywords):
     print(list(uniqueKeyphrases))
     print(finalSummary)
     print(keywordMI)
-    return finalSummary, uniqueKeyphrases 
+    return finalSummary, uniqueKeyphrases
+
 
 def find_keywords(text):
-        keywords = rk.Rake("SmartStoplist.txt")
-        return keywords.run(text)
+	"""
+	This function finds all the keywords.
+	
+	Args:
+		text (string): Where we extract the keywords from
+	
+	Returns:
+		keywords (list): A list of tuples that contains the key words
+	"""
+	keywords = rk.Rake("SmartStoplist.txt")
+	return keywords.run(text)
+
+
+def map_keyphrase_sentence(key_phrase, text):
+	"""
+	This function maps the key phrases into each sentence the
+	key phrases are present in.
+	
+	Args:
+		key_phrase (list): List of key phrases
+		text (string): Big body of input text
+	
+	Returns:
+		ret (dict): A mapping of the key phrases to each sentence it is in
+	"""
+
+	ret = dict()
+	# we split the blob of text into sentences
+	split_text = sent_tokenize(text)
+	for sentence in split_text:
+		for phrase in key_phrase:
+			# checks to see if a phrase is in a sentence
+			if(phrase in sentence):
+				ret = add_to_dict(ret, phrase, sentence)
+	return ret
+
+
+def add_to_dict(dictionary, key, val):
+	"""
+	This function adds an item to a dictionary. Just some helper code.
+	
+	Args:
+		dictionary (dict): The dictionary we want to add an item to
+		key (string): The key of the dictionary
+		val (val): The value we want to add into the dictionary
+	
+	Returns:
+		dictionary (dict): The dictionary with the added value
+	"""
+	if(key in dictionary):
+		arr = dictionary.get(key)
+		arr.append(val)
+		ret[key] = arr
+	else:
+		arr = [val]
+		ret[key] = arr
+	return dictionary
 
 
 
 # calculate_MI(find_keywords(import_text("input.txt")))
 #proc = subprocess.Popen(["./js/calcMI.js", "--phrase1=background language model", "--phrase2=pseudocounts"], stdout=subprocess.PIPE)
-#print(float(proc.stdout.readline()))
+# print(float(proc.stdout.readline()))
 
 
-## REFERENCE MATERIAL
-    # tokenizer = nl.tokenize.RegexpTokenizer(r'\w+')
-    # tokens = tokenizer.tokenize(text)
-    # stopWords = set(stopwords.words('english'))
-    # words = []
-    # for w in tokens:
-    #     if w not in stopWords:
-    #         words.append(w)
+# REFERENCE MATERIAL
+	# tokenizer = nl.tokenize.RegexpTokenizer(r'\w+')
+	# tokens = tokenizer.tokenize(text)
+	# stopWords = set(stopwords.words('english'))
+	# words = []
+	# for w in tokens:
+	#     if w not in stopWords:
+	#         words.append(w)
 
-    # bigrams = nl.ngrams(words, 2)
-    # trigrams = nl.ngrams(words, 3)
+	# bigrams = nl.ngrams(words, 2)
+	# trigrams = nl.ngrams(words, 3)
 
-    # print(words)
-    # print(Counter(bigrams))
-    # print(Counter(trigrams))
+	# print(words)
+	# print(Counter(bigrams))
+	# print(Counter(trigrams))
