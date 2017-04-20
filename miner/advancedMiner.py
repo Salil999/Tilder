@@ -46,7 +46,7 @@ def calculate_MI(keywords):
     keywords = [tup for tup in keywords if tup[1] > 4.0]
     # print(keywords)
 
-    for i in range(5):
+    for i in range(min(5, len(keywords))):
         phrase1 = keywords[i][0].encode("ascii", "ignore").decode("ascii")
         if phrase1 != keywords[i][0]:
             continue
