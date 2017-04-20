@@ -24,9 +24,9 @@ def textToFile(text):
 def process_text(text):
     textToFile(text)
     keywords = find_keywords(text)
-    summary, uniques = calculate_MI(keywords)
+    summary, uniques, deps = calculate_MI(keywords)
     sentenceDict = map_keyphrase_sentence(uniques, text)
-    return {"summary": summary, "sentences": sentenceDict}
+    return {"summary": summary, "sentences": sentenceDict, "graph": deps}
 
 
 def callMIScript(phrase1, phrase2):
@@ -39,7 +39,7 @@ def callMIScript(phrase1, phrase2):
 
 
 def calculate_MI(keywords):
-    keywordMI = {}
+    dependencies = {}
     finalSummary = ""
     uniqueKeyphrases = set()
 
@@ -51,6 +51,7 @@ def calculate_MI(keywords):
         if phrase1 != keywords[i][0]:
             continue
         subPhrases = []
+        dependencies[phrase1] = []
         if phrase1 not in uniqueKeyphrases:
             uniqueKeyphrases.add(phrase1)
         for j in range(i, len(keywords)):
@@ -64,20 +65,21 @@ def calculate_MI(keywords):
             print(line)
             mi = float(line)
             subPhrases.append((phrase2, mi))
-            # keywordMI[(phrase1, phrase2)] = mi
         # print()
         subPhrases = [tup[0] for tup in sorted(
             subPhrases, key=lambda tup: tup[1])[::-1][:4]]
         summaryLine = phrase1 + ': ' + ', '.join(subPhrases)
         for elem in subPhrases:
+            arr = dependencies[phrase1]
+            arr.append(elem)
+            dependencies[phrase1] = arr
             if elem not in uniqueKeyphrases:
                 uniqueKeyphrases.add(elem)
         print(summaryLine)
         finalSummary += summaryLine + '\n'
     print(list(uniqueKeyphrases))
     print(finalSummary)
-    print(keywordMI)
-    return finalSummary, uniqueKeyphrases
+    return finalSummary, uniqueKeyphrases, dependencies
 
 
 def find_keywords(text):
