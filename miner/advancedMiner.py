@@ -11,6 +11,10 @@ def import_text(file_path):
     data = file.read().replace('\n', ' ')
     return data
 
+def wiki_lookup(term):
+    raw_content = wikipedia.page(term)
+    return process_text(raw_content)
+
 
 def textToFile(text):
     inputFiles = ["input.txt", "../input.txt"]
