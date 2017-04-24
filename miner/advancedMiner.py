@@ -13,7 +13,7 @@ def import_text(file_path):
 
 def wiki_lookup(term):
     raw_content = wikipedia.page(term)
-    return process_text(raw_content)
+    return process_text(raw_content.content)
 
 
 def textToFile(text):
@@ -28,6 +28,7 @@ def textToFile(text):
 def process_text(text):
     textToFile(text)
     keywords = find_keywords(text)
+    print(keywords)
     summary, uniques, deps = calculate_MI(keywords)
     sentenceDict = map_keyphrase_sentence(uniques, text)
     return {"summary": summary, "sentences": sentenceDict, "graph": deps}
