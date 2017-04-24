@@ -25,10 +25,15 @@ def textToFile(text):
         file.close()
 
 
+def filterKeywords(keywords):
+    keywords = [tup for tup in keywords if tup[1] > 0.5]
+    
+
+
 def process_text(text):
     textToFile(text)
     keywords = find_keywords(text)
-    print(keywords)
+    #print(keywords)
     summary, uniques, deps = calculate_MI(keywords)
     sentenceDict = map_keyphrase_sentence(uniques, text)
     return {"summary": summary, "sentences": sentenceDict, "graph": deps}
