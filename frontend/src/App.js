@@ -68,7 +68,7 @@ class App extends Component {
         <p className="App-intro">
           <textarea value={this.state.text} onChange={e => this.setState({text: e.target.value})}></textarea>
           <br />
-          <input type="submit" onClick={e => fetch(`http://localhost:5000/${this.state.text}`).then(this.updateResults).then(this.setState({text: ""}))}></input>
+          <input type="submit" onClick={e => fetch(`http://localhost:5000/text/${this.state.text}`).then(this.updateResults).then(this.setState({text: ""}))}></input>
           <br />
           <br />
           <br />

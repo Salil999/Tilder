@@ -11,6 +11,10 @@ def import_text(file_path):
     data = file.read().replace('\n', ' ')
     return data
 
+def wiki_lookup(term):
+    raw_content = wikipedia.page(term)
+    return process_text(raw_content.content)
+
 
 def textToFile(text):
     inputFiles = ["input.txt", "../input.txt"]
@@ -24,6 +28,7 @@ def textToFile(text):
 def process_text(text):
     textToFile(text)
     keywords = find_keywords(text)
+    print(keywords)
     summary, uniques, deps = calculate_MI(keywords)
     sentenceDict = map_keyphrase_sentence(uniques, text)
     return {"summary": summary, "sentences": sentenceDict, "graph": deps}
@@ -46,7 +51,7 @@ def calculate_MI(keywords):
     keywords = [tup for tup in keywords if tup[1] > 4.0]
     # print(keywords)
 
-    for i in range(5):
+    for i in range(min(5, len(keywords))):
         phrase1 = keywords[i][0].encode("ascii", "ignore").decode("ascii")
         if phrase1 != keywords[i][0]:
             continue
