@@ -14,6 +14,7 @@ class App extends Component {
   }
   
   state = {
+    wikipedia: "",
     text: "",
     results: "",
     sentences: [],
@@ -35,26 +36,30 @@ class App extends Component {
 
     for(let key in this.state.graph){
       if(this.state.graph.hasOwnProperty(key)){
-        console.log(this.state.graph[key])
+        nodes.push({
+          id: key,
+          label: key
+        })
+        this.state.graph[key]
+          .forEach(s => {
+            nodes.push({
+              id: s,
+              label: s
+            })
+            edges.push({
+              source: key,
+              target: s
+            })
+          })
       }
     }
 
+    nodes = _.uniqBy(nodes, 'id')
+    edges = _.uniqBy(edges, e => e.source+' - ' +e.target)
+
     return ({
-      nodes: [
-        { id: 'topic1', label: 'topic 1'},
-        { id: 'topic2', label: 'topic 2'},
-        { id: 'topic3', label: 'topic 3'},
-        { id: 'topic4', label: 'topic 4'},
-        { id: 'topic5', label: 'topic 5'}
-      ],
-      edges: [
-        {source: 'topic1', target: 'topic2'},
-        {source: 'topic1', target: 'topic3'},
-        {source: 'topic1', target: 'topic4'},
-        {source: 'topic2', target: 'topic3'},
-        {source: 'topic2', target: 'topic4'},
-        {source: 'topic4', target: 'topic5'},
-      ]
+      nodes,
+      edges
     })
   }
 
@@ -66,6 +71,15 @@ class App extends Component {
           <h2>Welcome to Tilder</h2>
         </div>
         <p className="App-intro">
+          <input 
+            value={this.state.wikipedia}
+            onChange={e => this.setState({wikipedia: e.target.value})}
+          />
+          <br />
+          <input type="submit" onClick={e => fetch(`http://localhost:5000/wiki/${this.state.wikipedia}`).then(this.updateResults).then(this.setState({wikipedia: ""}))}></input>
+          <br />
+          <hr />
+          <br />
           <textarea value={this.state.text} onChange={e => this.setState({text: e.target.value})}></textarea>
           <br />
           <input type="submit" onClick={e => fetch(`http://localhost:5000/text/${this.state.text}`).then(this.updateResults).then(this.setState({text: ""}))}></input>

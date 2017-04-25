@@ -5,7 +5,15 @@ class Graph extends Component {
   render() {
     return (
       <InteractiveForceGraph 
-        simulationOptions={{ height: 300, width: 300 }}
+        key={this.props.data.nodes.length}
+        simulationOptions={{
+          height: 600,
+          width: 600,
+          animate: true,
+          strength: {
+            collide: 8,
+          }
+        }}
         labelAttr="label"
         onSelectNode={(node) => console.log(node)}
         highlightDependencies
