@@ -5,23 +5,25 @@ class Graph extends Component {
   render() {
     return (
       <InteractiveForceGraph 
-        simulationOptions={{ height: 300, width: 300 }}
+        key={this.props.data.nodes.length}
+        simulationOptions={{
+          height: 600,
+          width: 600,
+          animate: true,
+          strength: {
+            collide: 8,
+          }
+        }}
         labelAttr="label"
         onSelectNode={(node) => console.log(node)}
         highlightDependencies
         >
-        <ForceGraphNode node={{ id: 'topic1', label: 'topic 1', radius: 10 }} fill="red" />
-        <ForceGraphNode node={{ id: 'topic2', label: 'topic 2', radius: 10 }} fill="red" />
-        <ForceGraphNode node={{ id: 'topic3', label: 'topic 3', radius: 10 }} fill="red" />
-        <ForceGraphNode node={{ id: 'topic4', label: 'topic 4', radius: 10 }} fill="red" />
-        <ForceGraphNode node={{ id: 'topic5', label: 'topic 5', radius: 10 }} fill="red" />
-        <ForceGraphLink link={{ source: 'topic1', target: 'topic2', value: 2 }} />
-        <ForceGraphLink link={{ source: 'topic1', target: 'topic3', value: 2 }} />
-        <ForceGraphLink link={{ source: 'topic1', target: 'topic4', value: 2 }} />
-        <ForceGraphLink link={{ source: 'topic1', target: 'topic2', value: 2 }} />
-        <ForceGraphLink link={{ source: 'topic2', target: 'topic3', value: 2 }} />
-        <ForceGraphLink link={{ source: 'topic2', target: 'topic4', value: 2 }} />
-        <ForceGraphLink link={{ source: 'topic3', target: 'topic5', value: 2 }} />
+        {
+          this.props.data.nodes.map(n => <ForceGraphNode key={n.id} node={{ ...n, radius: 10 }} fill="red" />)
+        }
+        {
+          this.props.data.edges.map(e => <ForceGraphLink key={`${e.source} ${e.target}`} link={{ ...e, value: 2 }} />)
+        }
       </InteractiveForceGraph>
     );
   }
