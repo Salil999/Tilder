@@ -1,3 +1,3 @@
 import advancedMiner
 
-print(advancedMiner.wiki_lookup("Barack Obama"))
+print(advancedMiner.wiki_lookup("Pizza"))

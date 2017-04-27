@@ -6,7 +6,8 @@ const argv = require('yargs').argv;
 
 const readFile = Promise.denodeify(fs.readFile);
 
-const SEG_SIZE = 50
+// const SEG_SIZE = 300
+const NUM_SEGS = 42
 
 const makeHash = text => {
   let hash = {}
@@ -15,6 +16,7 @@ const makeHash = text => {
     .split(' '))
     .map(w => w.toLowerCase())
     .map(w => [_.first((w.match(/[\w-']+/) || [''])[0].split('\'')), _.last((w.match(/[\w-']+/) || [''])[0].split('\''))])
+    .map(_.uniq)
     .flatten()
     .value()
 
@@ -37,6 +39,7 @@ const getPhraseInstances = (phrase, hash) => {
       .tail()
       .value()
 
+  // console.error(startWord, hash[startWord], startingPosition)
 
   return hash[startWord]
     .filter(pos => startingPosition.reduce((p, c, i) => p ? _.includes(c, pos+i+1) : p, true))
@@ -49,6 +52,7 @@ const getPhraseInstances = (phrase, hash) => {
 
 const getProbability = (inst1, inst2, size) => {
 
+  const SEG_SIZE = Math.floor(size / NUM_SEGS);
   const numSegs = Math.ceil(size / SEG_SIZE);
 
   let numSegsWith1 = 0
@@ -63,10 +67,12 @@ const getProbability = (inst1, inst2, size) => {
       numSegsWith1And2 += 1
   }
 
+  console.error(numSegsWith1, numSegsWith2, numSegsWith1And2, numSegs)
+
   return {
-    prob1: (numSegsWith1+.5)/(numSegs+1),
-    prob2: (numSegsWith2+.5)/(numSegs+1),
-    prob1And2: (numSegsWith1And2+.25)/(numSegs+1)
+    prob1: (numSegsWith1+0.5)/(numSegs+1),
+    prob2: (numSegsWith2+0.5)/(numSegs+1),
+    prob1And2: (numSegsWith1And2+0.25)/(numSegs+1)
   }
     // inst1
       // .map()
