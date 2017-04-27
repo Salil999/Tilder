@@ -4,6 +4,7 @@ from nltk.tokenize import sent_tokenize
 import wikipedia
 import subprocess
 import RAKE.rake as rk
+import re
 
 
 def import_text(file_path):
@@ -20,14 +21,26 @@ def textToFile(text):
     inputFiles = ["input.txt", "../input.txt"]
     for fileName in inputFiles:
         file = open(fileName, "w")
-        text = text.replace('\n', '').replace('\r', '')
         file.write(text)
         file.close()
 
 
+def filterKeywords(keywords):
+    return keywords #[tup for tup in keywords if (tup[1] > 2.0 and len(tup[0].split(' ')) < 3)]
+    
+
+
 def process_text(text):
+    text = text.replace('\n', '').replace('\r', '')
+    regex = re.compile("[^\-\w.&\s!\?]")
+    regex2 = re.compile("\.(?=\w)")
+    regex3 = re.compile("-")
+    text = re.sub(regex, '', text)
+    text = re.sub(regex2, '. ', text)
+    text = re.sub(regex3, ' ', text)
     textToFile(text)
     keywords = find_keywords(text)
+    keywords = filterKeywords(keywords)
     print(keywords)
     summary, uniques, deps = calculate_MI(keywords)
     sentenceDict = map_keyphrase_sentence(uniques, text)
@@ -97,8 +110,9 @@ def find_keywords(text):
     Returns:
             keywords (list): A list of tuples that contains the key words
     """
-    keywords = rk.Rake("SmartStoplist.txt")
-    return keywords.run(text)
+    keywords = rk.Rake("SmartStoplist.txt", 4, 4, 2)
+    words = keywords.run(text)
+    return words
 
 
 def map_keyphrase_sentence(key_phrase, text):
