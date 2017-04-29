@@ -7,6 +7,16 @@ import RAKE.rake as rk
 import re
 
 
+def load_corpus():
+    ret_val = dict()
+    file_path = 'data/corpora/count_1w.txt'
+    with open(file_path) as f:
+        for line in f.readlines():
+            key, val = line.split('\t')
+            d[key] = val
+    return ret_val
+
+
 def import_text(file_path):
     file = open(file_path, 'r')
     data = file.read().replace('\n', ' ')
