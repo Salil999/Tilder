@@ -6,12 +6,15 @@ class Graph extends Component {
     return (
       <InteractiveForceGraph 
         key={this.props.data.nodes.length}
+        zoom
+        minScale={0.25}
+        maxScale={5}
         simulationOptions={{
           height: 600,
           width: 600,
           animate: true,
           strength: {
-            collide: 8,
+            collisions: 8
           }
         }}
         labelAttr="label"

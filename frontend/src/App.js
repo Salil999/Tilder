@@ -78,11 +78,17 @@ class App extends Component {
           <br />
           <input type="submit" onClick={e => fetch(`http://localhost:5000/wiki/${this.state.wikipedia}`).then(this.updateResults).then(this.setState({wikipedia: ""}))}></input>
           <br />
-          <hr />
+          <pr />
           <br />
           <textarea value={this.state.text} onChange={e => this.setState({text: e.target.value})}></textarea>
           <br />
-          <input type="submit" onClick={e => fetch(`http://localhost:5000/text/${this.state.text}`).then(this.updateResults).then(this.setState({text: ""}))}></input>
+          <input type="submit" onClick={e => fetch(`http://localhost:5000/text`, {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state.text)
+          }).then(this.updateResults).then(this.setState({text: ""}))}></input>
           <br />
           <br />
           <br />

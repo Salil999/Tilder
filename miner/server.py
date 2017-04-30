@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import advancedMiner as Miner
 
@@ -6,9 +6,10 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route("/text/<text>")
+@app.route("/text", methods=['POST'])
 @cross_origin()
-def process_text(text):
+def process_text():
+    text = request.get_json()
     return jsonify(Miner.process_text(text))
 
 

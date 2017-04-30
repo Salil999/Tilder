@@ -55,7 +55,7 @@ def filterKeywords(keywords):
 
 
 def process_text(text):
-    text = text.replace('\n', '').replace('\r', '')
+    text = text.replace('\n', ' ').replace('\r', ' ')
     regex = re.compile("[^\-\w.&\s!\?]")
     regex2 = re.compile("\.(?=\w)")
     regex3 = re.compile("-")
@@ -64,8 +64,9 @@ def process_text(text):
     text = re.sub(regex3, ' ', text)
     textToFile(text)
     keywords = find_keywords(text)
-    keywords = filterKeywords(keywords)
-    rarifier(keywords, load_corpus())
+    # keywords = filterKeywords(keywords)
+    # rarifier(keywords, load_corpus())
+    print(keywords)
     summary, uniques, deps = calculate_MI(keywords)
     sentenceDict = map_keyphrase_sentence(uniques, text)
     return {"summary": summary, "sentences": sentenceDict, "graph": deps}
