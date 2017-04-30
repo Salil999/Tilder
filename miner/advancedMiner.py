@@ -13,8 +13,22 @@ def load_corpus():
     with open(file_path) as f:
         for line in f.readlines():
             key, val = line.split('\t')
-            d[key] = val
+            ret_val[key] = int(val)
     return ret_val
+
+def rarifier(keywords, freqs):
+    sortWords = []
+    for tup in keywords:
+        keyPhrase = tup[0]
+        totalRarity = 0
+        termList = keyPhrase.split(' ')
+        for word in termList:
+            if word in freqs:
+                totalRarity += 1/freqs[word]
+            else:
+                totalRarity += 1/500000
+        sortWords.append((keyPhrase, totalRarity))
+    print([tup for tup in sorted(sortWords, key=lambda tup: tup[1])[::-1]])
 
 
 def import_text(file_path):
@@ -51,7 +65,7 @@ def process_text(text):
     textToFile(text)
     keywords = find_keywords(text)
     keywords = filterKeywords(keywords)
-    print(keywords)
+    rarifier(keywords, load_corpus())
     summary, uniques, deps = calculate_MI(keywords)
     sentenceDict = map_keyphrase_sentence(uniques, text)
     return {"summary": summary, "sentences": sentenceDict, "graph": deps}
