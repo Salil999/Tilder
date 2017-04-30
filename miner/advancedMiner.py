@@ -13,7 +13,7 @@ def load_corpus():
     with open(file_path) as f:
         for line in f.readlines():
             key, val = line.split('\t')
-            d[key] = val
+            ret_val[key] = val
     return ret_val
 
 
